@@ -1,12 +1,6 @@
-// function for converting a csv file into object named data
-function csvToObject (filename) {
-	var data = $.csv.toObjects(filename);
-	return data;
-};
-
 // function for calculating mean from a given object data
 function mean (data) {
-	var maenOfData = math.mean(data);
+	var meannOfData = math.mean(data);
 	return meanOfData;
 };
 
@@ -16,16 +10,12 @@ function stdDeviation (data) {
 	return std;
 };
 
-var meanHigh = mean(data.high);
-var meanLow = mean(data.low);
-var stdHigh = stdDeviation(data.high);
-var stdLow = stdDeviation(data.low);
-
 // function for embedding mean and std in the chart
 function generateChart (data,meanHigh,meanLow,stdHigh,stdLow) {
 	var high = data.high;
 	var low = data.low;
 	var chart = c3.generate({
+		bindto: document.getElementById('chart'),
 	    data: {
 	      	xs: {
 	      		'high': 'x1',
@@ -74,4 +64,34 @@ function generateChart (data,meanHigh,meanLow,stdHigh,stdLow) {
 	        //width: 100 // this makes bar width 100px
 	    }
 	});
+};
+
+// function for converting a csv file into object named data
+function doStuff(data) {
+
+    var meanHigh = mean(data.high);
+    var meanLow = mean(data.low);
+    var stdHigh = stdDeviation(data.high);
+    var stdLow = stdDeviation(data.low);
+
+    generateChart(data,meanHigh,meanLow,stdHigh,stdLow);
+    console.log(data);
 }
+
+// function for converting a csv file into JSON format
+function csvToJSON(file, callBack) {
+    Papa.parse(file, {
+        download: false,
+        delimiter: "",	// auto-detect
+		newline: "",	// auto-detect
+		header: true, //the first row of parsed data will be interpreted as field names
+		dynamicTyping: true,//numeric and boolean data will be converted to their type instead of remaining strings.
+		comments: true,
+		skipEmptyLines: true,
+        complete: function(results){
+            callBack(results.data);
+        }
+    });
+}
+
+csvToJSON("input1.csv", doStuff);
