@@ -4,13 +4,10 @@
 	<title>Mean and Standard Deviation</title>
 
 	<!-- CDN for jQuery -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
 
-	<!-- Load jQuery-csv library -->
-	<!-- <script type="text/javascript" src="libraries/jqiery.csv.min.js"></script> -->
-
-	<!-- Load Papa Parse libraray -->
-	<script type="text/javascript" src="libraries/papaparse.min.js"></script>
+	<!-- CDN jQuery-csv library -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.71/jquery.csv-0.71.min.js"></script>
 
 	<!-- Load math.js library  -->
 	<script type="text/javascript" src="libraries/math.min.js"></script>
@@ -24,9 +21,16 @@
 
 </head>
 <body>
-	<div id="chart"></div>
+
+	<div id="dvImportSegments" class="fileupload ">
+	<fieldset>
+	    <legend>Upload your CSV File</legend>
+	    <input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
+	</fieldset>
+	<div id="chart"> </div>
+
 	<!-- script file consists of functions -->
-	<script type="text/javascript" src="median_deviation.js"></script>
+	<script type="text/javascript" src="mean_deviation.js"></script>
 	
 </script>
 </body>
