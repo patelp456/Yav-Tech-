@@ -50,18 +50,19 @@ function ChartHandler (data) {
 
 	var i;
 
-	high[0] = "high";
-	low[0] = "low";
+	high[0] = data[0][0];
+	low[0] = data[0][1];
 	mean[0] = "mean";
 	std1[0] = "std1";
 	std2[0] = "std2";
-	revenue[0] = "revenue";
-	bookvalue[0] = "bookvalue";
-	eps[0] = "eps";
-	dividends[0] = "dividends";
+	revenue[0] = data[0][2];
+	bookvalue[0] = data[0][3];
+	eps[0] = data[0][4];
+	dividends[0] = data[0][5];
+
 
 	for (i = 1; i < data.length; i++) { 
-		
+
 	    high[i] = data[i][0];
 	    low[i] = data[i][1];
 	    mean[i] = math.mean(high[i],low[i]);
