@@ -11,7 +11,7 @@ function stdDeviation (data) {
 };
 
 // function for embedding mean and std in the chart
-function generateChart (high,low,mean,std) {
+function generateChart (high,low,mean,std1,std2) {
 	var chart = c3.generate({
 		bindto: document.getElementById('dvImportSegments'),
 	    data: {
@@ -19,7 +19,8 @@ function generateChart (high,low,mean,std) {
 		    	high,
 		    	low,
 		    	mean,
-		    	std,
+		    	std1,
+		    	std2,
  		      ],
 		    type: 'line',
 		    padding: {
@@ -36,21 +37,24 @@ function ChartHandler (data) {
 	var high = new Array();
 	var low = new Array();
 	var mean = new Array();
-	var std = new Array();
+	var std1 = new Array();
+	var std2 = new Array();
 	var i;
 	high[0] = "High";
 	low[0] = "Low";
 	mean[0] = "Mean";
-	std[0] = "std";
+	std1[0] = "Std1";
+	std2[0] = "Std2";
 	for (i = 1; i < data.length; i++) { 
 	    high[i] = data[i][0];
 	    low[i] = data[i][1];
 	    mean[i] = math.mean(high[i],low[i]);
-	    std[i] = math.std(high[i], low[i]);
+	    std1[i] = mean[i] + math.std(high[i], low[i]);
+	    std2[i] = mean[i] - math.std(high[i], low[i]);
 	}
 
 	//document.write(high);
-	generateChart(high,low,mean,std);
+	generateChart(high,low,mean,std1,std2);
 };
 
 $(document).ready(function() {
