@@ -11,7 +11,7 @@ function stdDeviation (data) {
 };
 
 // function for embedding mean and std in the chart
-function generateChart (high,low,mean,std1,std2) {
+function generateChart (high,low,mean,std1,std2,revenue,bookvalue,eps,dividends) {
 	var chart = c3.generate({
 		bindto: document.getElementById('dvImportSegments'),
 	    data: {
@@ -21,6 +21,10 @@ function generateChart (high,low,mean,std1,std2) {
 		    	mean,
 		    	std1,
 		    	std2,
+		    	revenue,
+		    	bookvalue,
+		    	eps,
+		    	dividends,
  		      ],
 		    type: 'line',
 		    padding: {
@@ -39,22 +43,39 @@ function ChartHandler (data) {
 	var mean = new Array();
 	var std1 = new Array();
 	var std2 = new Array();
+	var revenue = new Array();
+	var bookvalue = new Array();
+	var eps = new Array();
+	var dividends = new Array();
+
 	var i;
-	high[0] = "High";
-	low[0] = "Low";
-	mean[0] = "Mean";
-	std1[0] = "Std1";
-	std2[0] = "Std2";
+
+	high[0] = "high";
+	low[0] = "low";
+	mean[0] = "mean";
+	std1[0] = "std1";
+	std2[0] = "std2";
+	revenue[0] = "revenue";
+	bookvalue[0] = "bookvalue";
+	eps[0] = "eps";
+	dividends[0] = "dividends";
+
 	for (i = 1; i < data.length; i++) { 
+		
 	    high[i] = data[i][0];
 	    low[i] = data[i][1];
 	    mean[i] = math.mean(high[i],low[i]);
+	    revenue[i] = (mean[i])/(data[i][2]);
+	    bookvalue[i] = (mean[i])/(data[i][3]);
+	    eps[i] = (mean[i])/(data[i][4]);
+	    dividends[i] = (mean[i])/(data[i][5]);
 	    std1[i] = mean[i] + math.std(high[i], low[i]);
 	    std2[i] = mean[i] - math.std(high[i], low[i]);
+
 	}
 
 	//document.write(high);
-	generateChart(high,low,mean,std1,std2);
+	generateChart(high,low,mean,std1,std2,revenue,bookvalue,eps,dividends);
 };
 
 $(document).ready(function() {
