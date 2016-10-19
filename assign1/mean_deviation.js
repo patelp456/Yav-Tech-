@@ -11,33 +11,46 @@ function stdDeviation (data) {
 };
 
 // function for embedding mean and std in the chart
-function generateChart (high,low,mean) {
+function generateChart (high,low,mean,std) {
 	var chart = c3.generate({
 		bindto: document.getElementById('dvImportSegments'),
 	    data: {
 		    columns: [
-	         	['high', high[0],high[1],high[2],high[3],high[4],high[5],high[6],high[7],high[8],high[9],high[10],high[11]],
-	         	['low',low[0],low[1],low[2],low[3],low[4],low[5],low[6],low[7],low[8],low[9],low[10],low[11]],
-	         	['mean', mean[0],mean[1],mean[2],mean[3],mean[4],mean[5],mean[6],mean[7],mean[8],mean[9],mean[10],mean[11]],
-		      ],
-		    type: 'line'
+		    	high,
+		    	low,
+		    	mean,
+		    	std,
+ 		      ],
+		    type: 'line',
+		    padding: {
+	           top: 20,
+	           right: 20,
+	           left: 20,
+		    }
 	    }
 	});
 };
 
 function ChartHandler (data) {
-	
-	var high = new Array(); // array of high values
-	var low = new Array();  // array of low values
-	var mean = new Array(); // array of mean values
+
+	var high = new Array();
+	var low = new Array();
+	var mean = new Array();
+	var std = new Array();
 	var i;
+	high[0] = "High";
+	low[0] = "Low";
+	mean[0] = "Mean";
+	std[0] = "std";
 	for (i = 1; i < data.length; i++) { 
-	    high[i-1] = data[i][0];
-	    low[i-1] = data[i][1];
-	    mean[i-1] = math.mean(high[i-1],low[i-1]);
+	    high[i] = data[i][0];
+	    low[i] = data[i][1];
+	    mean[i] = math.mean(high[i],low[i]);
+	    std[i] = math.std(high[i], low[i]);
 	}
 
-	generateChart(high,low,mean);
+	//document.write(high);
+	generateChart(high,low,mean,std);
 };
 
 $(document).ready(function() {
