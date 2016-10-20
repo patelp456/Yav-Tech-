@@ -25,7 +25,7 @@ function generateChart (high,low,mean,std1,std2,revenue,bookvalue,eps,dividends)
 		    	bookvalue,
 		    	eps,
 		    	dividends,
- 		      ],
+ 		    ],
 		    type: 'line',
 		    padding: {
 	           top: 20,
@@ -35,6 +35,36 @@ function generateChart (high,low,mean,std1,std2,revenue,bookvalue,eps,dividends)
 	    }
 	});
 };
+
+
+function generateChart2 (rateEps) {
+	var chart = c3.generate({
+		bindto: document.getElementById('chart2'),
+	    data: {
+		    columns: [
+		    	rateEps,
+ 		    ],
+		    type: 'line',
+		    labels: true
+	    },
+	    grid: {
+	        y: {
+	            lines: [
+	                {value: 0, text: 'Base label of eps', position: 'middle'}
+	            ]
+	        }
+	    },
+        axis: {
+	        y:{
+	            max: 2,
+	            min: -2,
+	            // Range includes padding, set 0 if no padding needed
+	            // padding: {top:0, bottom:0
+            }
+        }
+	});
+};
+
 
 function ChartHandler (data) {
 
@@ -48,6 +78,8 @@ function ChartHandler (data) {
 	var eps = new Array();
 	var dividends = new Array();
 
+	var rateEps = new Array();
+
 	var i;
 
 	high[0] = data[0][0];
@@ -60,8 +92,10 @@ function ChartHandler (data) {
 	eps[0] = data[0][4];
 	dividends[0] = data[0][5];
 
+	rateEps[0] = "Rate of change of eps";
 
-	for (i = 1; i < data.length; i++) { 
+
+	for (i = 1; i < data.length; i++) {
 
 	    high[i] = data[i][0];
 	    low[i] = data[i][1];
@@ -75,8 +109,16 @@ function ChartHandler (data) {
 
 	}
 
+	// calculate rateEps over year 
+	rateEps[1] = 0;
+	for (var i = 2; i < data.length; i++) {
+		rateEps[i] = (data[i][4] - data[i-1][4]).toFixed(2);
+	}
+
 	//document.write(high);
 	generateChart(high,low,mean,std1,std2,revenue,bookvalue,eps,dividends);
+	generateChart2(rateEps);
+
 };
 
 $(document).ready(function() {
