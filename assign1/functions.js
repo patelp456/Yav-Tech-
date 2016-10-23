@@ -25,12 +25,7 @@ function generateChart (high,low,mean,std1,std2,revenue,bookvalue,eps,dividends)
 		    	eps,
 		    	dividends,
  		    ],
-		    type: 'line',
-		    padding: {
-	           top: 20,
-	           right: 20,
-	           left: 20,
-		    }
+		    type: 'line'
 	    }
 	});
 };
@@ -85,36 +80,84 @@ function ChartHandler (data) {
 	bookvalue[0] = data[0][3];
 	eps[0] = data[0][4];
 	dividends[0] = data[0][5];
-
 	rateEps[0] = "eps";
-	rateDividends[0] = 'dividends';
 	rateMean[0] = 'mean';
+	rateDividends[0] = 'dividends';
+	
+	
 
 	for (i = 1; i < data.length; i++) {
 
 	    high[i] = data[i][0];
 	    low[i] = data[i][1];
 	    mean[i] = math.mean(high[i],low[i]);
-	    revenue[i] = (mean[i])/(data[i][2]);
-	    bookvalue[i] = (mean[i])/(data[i][3]);
-	    eps[i] = (mean[i])/(data[i][4]);
-	    dividends[i] = (mean[i])/(data[i][5]);
+
+	    if (data[i][2] != 0) 
+	    {
+	    	revenue[i] = (mean[i])/(data[i][2]);
+	    } 
+	    else 
+	    {
+	    	revenue[i] = 0; 
+	    }
+
+	    if (data[i][3] != 0) 
+	    {
+	    	bookvalue[i] = (mean[i])/(data[i][3]);
+	    } 
+	    else 
+	    {
+	    	bookvalue[i] = 0;
+	    }
+
+	    if (data[i][4] != 0) 
+	    {
+	    	 eps[i] = (mean[i])/(data[i][4]);
+	    } 
+	    else 
+	    {
+	    	eps[i] = 0;
+	    }
+
+	    if (data[i][5] != 0) 
+	    {
+	    	dividends[i] = (mean[i])/(data[i][5]);
+	    } 
+	    else 
+	    {
+	    	dividends[i] = 0;
+	    }
+	    
 	    std1[i] = mean[i] + math.std(high[i], low[i]);
 	    std2[i] = mean[i] - math.std(high[i], low[i]);
 
 	}
 
+
 	// calculate rateEps over year 
 	rateEps[1] = 0;
-	rateDividends[1] = 0;
 	rateMean[1] = 0;
+	rateDividends[1] = 0;
 
 	for (var i = 2; i < data.length; i++) {
 		rateEps[i] = (data[i][4] - data[i-1][4]).toFixed(2);
-		rateDividends[i] = (data[i][5] - data[i-1][5]).toFixed(2);
 		rateMean[i] = (mean[i] - mean[i-1]).toFixed(2);
+		rateDividends[i] = (data[i][5] - data[i-1][5]).toFixed(2);
 	}
-
+/*
+	if (dividends[1] != null) 
+	{
+		rateDividends[0] = 'dividends';
+		rateDividends[1] = 0;
+		for (var i = 2; i < data.length; i++) {
+			rateDividends[i] = (data[i][5] - data[i-1][5]).toFixed(2);
+		}
+	} 
+	else 
+	{
+		rateDividends[0] = null;
+	}
+*/
 	//document.write(high);
 	generateChart(high,low,mean,std1,std2,revenue,bookvalue,eps,dividends);
 	generateChart2(rateEps,rateDividends,rateMean);
@@ -122,61 +165,58 @@ function ChartHandler (data) {
 };
 
 // Method that reads and processes the selected file
-function FileHandler() {
+$(document).ready(function() {
 
-	$(document).ready(function() {
+	// The event listener for the file upload
+	document.getElementById('txtFileUpload').addEventListener('change', upload, false);
 
-		// The event listener for the file upload
-		document.getElementById('txtFileUpload').addEventListener('change', upload, false);
+	// Method that checks that the browser supports the HTML5 File API
+	function browserSupportFileUpload() 
+	{
+	    var isCompatible = false;
+	    
+	    if (window.File && window.FileReader && window.FileList && window.Blob) 
+	    {
+	    	isCompatible = true;
+	    }
 
-		// Method that checks that the browser supports the HTML5 File API
-		function browserSupportFileUpload() 
-		{
-		    var isCompatible = false;
-		    
-		    if (window.File && window.FileReader && window.FileList && window.Blob) 
-		    {
-		    	isCompatible = true;
-		    }
+	    return isCompatible;
+	}
 
-		    return isCompatible;
-		}
+	// Method that reads and processes the selected file
+	function upload(evt) {
+	    if (!browserSupportFileUpload()) 
+	    {
+	        alert('The File APIs are not fully supported in this browser!');
+	    } 
+	    else 
+	    {
+            var data = null;
+            var file = evt.target.files[0];
+            var reader = new FileReader();
+            reader.readAsText(file);
 
-		// Method that reads and processes the selected file
-		function upload(evt) {
-		    if (!browserSupportFileUpload()) 
-		    {
-		        alert('The File APIs are not fully supported in this browser!');
-		    } 
-		    else 
-		    {
-	            var data = null;
-	            var file = evt.target.files[0];
-	            var reader = new FileReader();
-	            reader.readAsText(file);
+            reader.onload = function(event) 
+            {
+                var csvData = event.target.result;
+                data = $.csv.toArrays(csvData);
 
-	            reader.onload = function(event) 
-	            {
-	                var csvData = event.target.result;
-	                data = $.csv.toArrays(csvData);
+                if (data && data.length > 0) 
+                {
+                    //alert('Imported -' + data.length + '- rows successfully!');
+                    //document.write(data);
+                    ChartHandler(data);
+                } 
+                else 
+                {
+                    alert('No data to import!');
+                }
+            };
 
-	                if (data && data.length > 0) 
-	                {
-	                    //alert('Imported -' + data.length + '- rows successfully!');
-	                    //document.write(data);
-	                    ChartHandler(data);
-	                } 
-	                else 
-	                {
-	                    alert('No data to import!');
-	                }
-	            };
-
-	            reader.onerror = function() 
-	            {
-	                alert('Unable to read ' + file.fileName);
-	            };
-	        }
-		}
-	});
-};
+            reader.onerror = function() 
+            {
+                alert('Unable to read ' + file.fileName);
+            };
+        }
+	}
+});

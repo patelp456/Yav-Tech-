@@ -9,17 +9,28 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.71/jquery.csv-0.71.min.js"></script>
 
 	<!-- Load math.js library  -->
-	<script type="text/javascript" src="libraries/math.min.js"></script>
+	<script type="text/javascript" src="./libraries/math.min.js"></script>
 
 	<!-- Load c3.min.css -->
-	<link href="libraries/c3.min.css" rel="stylesheet" type="text/css">
+	<link href="./libraries/c3.min.css" rel="stylesheet" type="text/css">
 
 	<!-- Load c3.min.js  -->
-	<script src="libraries/d3.js" charset="utf-8"></script>
-	<script type="text/javascript" src="libraries/c3.min.js"></script>
+	<script src="./libraries/d3.js" charset="utf-8"></script>
+	<script type="text/javascript" src="./libraries/c3.min.js"></script>
 
 </head>
 <body>
+
+	<div id="dvImportSegments" class="fileupload ">
+		<fieldset>
+		    <legend>Upload your CSV File</legend>
+		    <input type="file" name="File Upload" id="txtFileUpload" accept=".csv" />
+		</fieldset>
+	</div>
+	<div id="chart2"></div>
+
+	<!-- script file consists of functions -->
+	<script type="text/javascript" src="./functions.js"></script>
 	
 </body>
 </html>
