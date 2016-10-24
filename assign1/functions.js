@@ -1,3 +1,30 @@
+// function that dumps the debug values for an object
+function print_debug(printthis, returnoutput) 
+{
+    var output = '';
+
+    if($.isArray(printthis) || typeof(printthis) == 'object') 
+    {
+        for(var i in printthis) 
+        {
+            output += i + ' : ' + print_debug(printthis[i], true) + '\n';
+        }
+    }
+    else 
+    {
+        output += printthis;
+    }
+
+    if(returnoutput && returnoutput == true) 
+    {
+        return output;
+    }
+    else 
+    {
+        alert(output);
+    }
+}
+
 // function for calculating mean from a given object data
 function mean (data) {
 	var meanOfData = math.mean(data);
@@ -10,11 +37,13 @@ function stdDeviation (data) {
 	return std;
 };
 
-function generateChart (high,low,mean,std1,std2,revenue,bookvalue,eps,dividends) {
+function generateChart (high,low,mean,std1,std2,revenue,bookvalue,eps,dividends,year) {
 	var chart = c3.generate({
 		bindto: document.getElementById('dvImportSegments'),
 	    data: {
+	    	x: year[0],
 		    columns: [
+		    	year,
 		    	high,
 		    	low,
 		    	mean,
@@ -31,11 +60,13 @@ function generateChart (high,low,mean,std1,std2,revenue,bookvalue,eps,dividends)
 };
 
 
-function generateChart2 (rateEps,rateDividends,rateMean) {
+function generateChart2 (rateEps,rateDividends,rateMean,year) {
 	var chart = c3.generate({
 		bindto: document.getElementById('chart2'),
 	    data: {
+	    	x: year[0],
 		    columns: [
+		    	year,
 		    	rateEps,
 		    	rateDividends,
 		    	rateMean,
@@ -68,18 +99,20 @@ function ChartHandler (data) {
 	var rateEps = new Array();
 	var rateMean = new Array();
 	var rateDividends = new Array();
+	var year = new Array();
 
 	var i;
 
-	high[0] = data[0][0];
-	low[0] = data[0][1];
+	year[0] = data[0][0]
+	high[0] = data[0][1];
+	low[0] = data[0][2];
 	mean[0] = "mean";
 	std1[0] = "std1";
 	std2[0] = "std2";
-	revenue[0] = data[0][2];
-	bookvalue[0] = data[0][3];
-	eps[0] = data[0][4];
-	dividends[0] = data[0][5];
+	revenue[0] = data[0][3];
+	bookvalue[0] = data[0][4];
+	eps[0] = data[0][5];
+	dividends[0] = data[0][6];
 	rateEps[0] = "eps";
 	rateMean[0] = 'mean';
 	rateDividends[0] = 'dividends';
@@ -88,40 +121,41 @@ function ChartHandler (data) {
 
 	for (i = 1; i < data.length; i++) {
 
-	    high[i] = data[i][0];
-	    low[i] = data[i][1];
+		year[i] = data[i][0];
+	    high[i] = data[i][1];
+	    low[i] = data[i][2];
 	    mean[i] = math.mean(high[i],low[i]);
 
-	    if (data[i][2] != 0) 
+	    if (data[i][3] != 0) 
 	    {
-	    	revenue[i] = (mean[i])/(data[i][2]);
+	    	revenue[i] = (mean[i])/(data[i][3]);
 	    } 
 	    else 
 	    {
 	    	revenue[i] = 0; 
 	    }
 
-	    if (data[i][3] != 0) 
+	    if (data[i][4] != 0) 
 	    {
-	    	bookvalue[i] = (mean[i])/(data[i][3]);
+	    	bookvalue[i] = (mean[i])/(data[i][4]);
 	    } 
 	    else 
 	    {
 	    	bookvalue[i] = 0;
 	    }
 
-	    if (data[i][4] != 0) 
+	    if (data[i][5] != 0) 
 	    {
-	    	 eps[i] = (mean[i])/(data[i][4]);
+	    	 eps[i] = (mean[i])/(data[i][5]);
 	    } 
 	    else 
 	    {
 	    	eps[i] = 0;
 	    }
 
-	    if (data[i][5] != 0) 
+	    if (data[i][6] != 0) 
 	    {
-	    	dividends[i] = (mean[i])/(data[i][5]);
+	    	dividends[i] = (mean[i])/(data[i][6]);
 	    } 
 	    else 
 	    {
@@ -140,27 +174,19 @@ function ChartHandler (data) {
 	rateDividends[1] = 0;
 
 	for (var i = 2; i < data.length; i++) {
-		rateEps[i] = (data[i][4] - data[i-1][4]).toFixed(2);
+		rateEps[i] = (data[i][5] - data[i-1][5]).toFixed(2);
 		rateMean[i] = (mean[i] - mean[i-1]).toFixed(2);
-		rateDividends[i] = (data[i][5] - data[i-1][5]).toFixed(2);
+        rateMean[i] = (Number(rateMean[i]) + Number(rateMean[i-1])).toFixed(2);
+		rateDividends[i] = (data[i][6] - data[i-1][6]).toFixed(2);
 	}
-/*
-	if (dividends[1] != null) 
-	{
-		rateDividends[0] = 'dividends';
-		rateDividends[1] = 0;
-		for (var i = 2; i < data.length; i++) {
-			rateDividends[i] = (data[i][5] - data[i-1][5]).toFixed(2);
-		}
-	} 
-	else 
-	{
-		rateDividends[0] = null;
-	}
-*/
-	//document.write(high);
-	generateChart(high,low,mean,std1,std2,revenue,bookvalue,eps,dividends);
-	generateChart2(rateEps,rateDividends,rateMean);
+
+	print_debug(mean);
+    print_debug(rateMean);
+    print_debug(rateEps);
+    print_debug(rateDividends);
+
+	generateChart(high,low,mean,std1,std2,revenue,bookvalue,eps,dividends,year);
+	generateChart2(rateEps,rateDividends,rateMean,year);
 
 };
 
