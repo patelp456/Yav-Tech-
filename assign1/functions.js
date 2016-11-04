@@ -228,6 +228,7 @@ $(document).ready(function() {
 	// Method that checks that the browser supports the HTML5 File API
 	function browserSupportFileUpload() 
 	{
+		j = 0;
 	    var isCompatible = false;
 	    
 	    if (window.File && window.FileReader && window.FileList && window.Blob) 
@@ -270,7 +271,21 @@ $(document).ready(function() {
             	        //alert('Imported -' + data.length + '- rows successfully!');
             	        //document.write(data);
             	        final[cName[j]] = Calculation(data[evt.target.files[j].name]);
-            	        //data[evt.target.files[j].name] = data;
+            	        final[cName[j]].mean[0] = cName[j];
+            	        if (length == 1) 
+        	        	{
+        	        		ChartMain (final[cName[j]].high,final[cName[j]].low,final[cName[j]].mean,final[cName[j]].std1,final[cName[j]].std2,final[cName[j]].revenue,final[cName[j]].bookvalue,final[cName[j]].eps,final[cName[j]].dividends,final[cName[j]].year);
+        	        		ChartRate (final[cName[j]].rateEps,final[cName[j]].rateDividends,final[cName[j]].rateMean,final[cName[j]].year);
+        	        	} 
+        	        	else 
+        	        	{
+        	        		if (j > 0)
+        	        		{
+        	        			ChartCompare (final[cName[j-1]].mean, final[cName[j]].mean, final[cName[j]].year);
+        	        		}
+        	        	}
+            	        
+            	        //console.log(final);
             	        j++;
             	        //console.log(data);
             	    } 
@@ -287,8 +302,7 @@ $(document).ready(function() {
             }
             
         }
-        var c1 = final[cName[0]];
-        ChartRate (c1.rateEps,c1.rateDividends,c1.rateMean,c1.year);
+
 	}
 
 });
