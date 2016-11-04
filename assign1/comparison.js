@@ -1,4 +1,4 @@
-function Compare (data) {
+	/*unction Compare (data) {
 
 	var year = new Array();
 	var high = new Array();
@@ -45,14 +45,24 @@ function generateChart (mean1, mean2, year) {
 	});
 };
 
-d3.csv("test-input/spy.csv", function(error1, data1) {
-	d3.csv("test-input/goog2.csv", function(error2, data2) {
-		var f1 = Compare(data1);
-		document.write(f1);
-		var f2 = Compare(data2);
-		var mean1 = f1.mean;
-		var mean2 = f2.mean;
-		var year = f1.year;
-		//generateChart(mean1, mean2, year);
-	});
+var parse = d3.queue()
+			  .defer(d3.csv, "./test-input/spy.csv")
+			  .defer(d3.csv, "./test-input/goog2.csv")
+			  .await(analyze);	
+
+			function analyze(error, spy, goog2) {
+			  if(error) { console.log(error); }
+
+			  console.log(spy[0]);
+			  console.log(goog2[0]);
+			  document.write(spy[0]);
+			}
+*/
+
+// Parse local CSV file
+Papa.parse("./test-input/spy.csv", {
+	download: true,
+	complete: function(results) {
+		console.log(results.data);
+	}
 });
